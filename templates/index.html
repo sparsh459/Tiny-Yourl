@@ -1,0 +1,42 @@
+<head>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<main>
+    <h1>URL Shortener</h1>
+    <form id="post-form">
+        {% csrf_token %}
+        <input type="text" name="link" id="link" placeholder="Enter URL here">
+        <div class="buttons">
+            <button type="submit" id="shorten">Shorten</button>
+        </div>
+    </form>
+    <!-- below in h2 teh shorten link will be shown -->
+    <section id="section">
+        <h2></h2>
+    </section>
+
+</main>
+
+<!-- we're using ajax here so the page should not reoad after evrt time submit button is clicked -->
+<script type="text/javascript">
+   // after the sumit button is clicked in the form execute the function mentioned
+    $(document).on('submit', '#post-form', function (e) {
+        e.preventDefault();   // what this does is that when form is submitted page doesn't reload
+
+        $.ajax({
+            type: 'POST', // method:post
+            url: '/create', // which url to go to after submit is presed
+            // passing the data
+            data: {
+                link: $('#link').val(),  // this sends the link that we have given
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),  // we are also sending the csrf token
+            },
+            // if everything has been submitted successfuly tehn this should execute
+            success: function (data) {
+                $('h2').html("localhost:8000/" + data)
+            }
+        });
+    });
+</script>
